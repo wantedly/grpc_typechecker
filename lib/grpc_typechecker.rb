@@ -1,6 +1,3 @@
 require "grpc_typechecker/version"
-
-module GrpcTypechecker
-  class Error < StandardError; end
-  # Your code goes here...
-end
+require "grpc_typechecker/grpc_ext"
+require "grpc_typechecker/client_interceptor"

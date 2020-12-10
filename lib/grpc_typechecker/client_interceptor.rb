@@ -1,5 +1,5 @@
-module Servicex::Grpc
-  class ClientTypecheckInterceptor < GRPC::ClientInterceptor
+module GrpcTypechecker
+  class ClientInterceptor < GRPC::ClientInterceptor
     def initialize(service_class: nil)
       @service = service_class::Service
     end

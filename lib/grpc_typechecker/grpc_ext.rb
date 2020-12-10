@@ -1,4 +1,5 @@
 require "grpc"
+require "active_support/core_ext/string/inflections"
 
 module GRPC::GenericService
   # The usual way to supplement class methods is use of `Module#included'.
@@ -40,7 +41,7 @@ module GRPC::GenericService
       super if defined? super
 
       rpc_method = rpc_descs[method.to_s.camelize.to_sym]
-      return unless rpc_method
+      return unless rpc_method && @_prepended_module_for_type_check_
 
       # Overwrite the gRPC method
       @_prepended_module_for_type_check_.class_eval do

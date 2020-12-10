@@ -1,9 +1,8 @@
 require "spec_helper"
 require "google/protobuf/empty_pb"
-require 'src/proto/grpc/testing/messages_pb'
-require 'src/proto/grpc/testing/test_services_pb'
+require "src/proto/grpc/testing/test_services_pb"
 
-describe Servicex::Grpc::ClientTypecheckInterceptor do
+RSpec.describe GrpcTypechecker::ClientInterceptor do
   class self::TestService < Grpc::Testing::TestService::Service
     def empty_call(req, call)
       Grpc::Testing::Empty.new
@@ -17,7 +16,13 @@ describe Servicex::Grpc::ClientTypecheckInterceptor do
     s.handle(self.class::TestService)
     s
   }
-  let(:stub) { Servicex::Grpc.stub_for Grpc::Testing::TestService, "localhost:#{port}" }
+  let(:stub) {
+    Grpc::Testing::TestService::Stub.new(
+      "localhost:#{port}",
+      :this_channel_is_insecure,
+      interceptors: [described_class.new(service_class: Grpc::Testing::TestService)]
+    )
+  }
 
   before { allow(ENV).to receive(:[]).and_call_original }
   before { allow(ENV).to receive(:[]).with('BASIC_AUTH_SYSTEM_USERNAME').and_return('foo') }
