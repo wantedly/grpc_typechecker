@@ -22,11 +22,15 @@ module GRPC::GenericService
 
       mod = Module.new do
         singleton_class.class_eval do
-          # Some server interceptors try to obtain the service name by `method.owner.service_name`
+          # Some server interceptors try to obtain the service name by `method.owner.service_name` or `method.owner.to_s`.
           # despite `method` is overwritten by the method in this module.
-          # We thus redirect class method calls of `service_name` for compatibility.
+          # We thus redirect class method calls of `service_name` and `to_s` for compatibility.
           define_method :service_name do
             subclass.service_name
+          end
+
+          define_method :to_s do
+            subclass.to_s
           end
         end
       end
